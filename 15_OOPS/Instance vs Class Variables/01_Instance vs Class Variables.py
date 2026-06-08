@@ -68,3 +68,57 @@ print(f"Total Employees: {Employee.employee_count}")  # 3
 Employee.company_name = "NewTechCorp"
 print(emp1.company_name)   # NewTechCorp
 print(emp2.company_name)   # NewTechCorp
+
+
+# ⚠️ The Tricky Part — When Object Modifies Class Variable
+
+class Demo:
+    shared = "I am shared"
+
+d1 = Demo()
+d2 = Demo()
+
+print(d1.shared)   # I am shared
+print(d2.shared)   # I am shared
+
+# ⚠️ What happens here?
+d1.shared = "I am d1's own"   # This CREATES a new instance variable for d1!
+                               # It does NOT modify the class variable
+
+print(d1.shared)   # I am d1's own   ← d1 now has its OWN instance variable
+print(d2.shared)   # I am shared     ← d2 still uses the class variable
+print(Demo.shared) # I am shared     ← class variable unchanged!
+
+# The CORRECT way to modify class variable:
+Demo.shared = "Updated for everyone"
+print(d1.shared)   # I am d1's own  ← d1 uses its own instance variable (shadow)
+print(d2.shared)   # Updated for everyone
+print(Demo.shared) # Updated for everyone
+
+
+# Key Insight: When you do obj.class_var = value, Python creates a new instance variable that shadows the class variable.
+#  It does NOT change the class variable.
+
+# 🔷 How Python Looks Up Attributes (Search Order)
+
+# Python looks for an attribute in this order:
+# 1. The object's own __dict__ (instance variables)
+# 2. The class's __dict__ (class variables)
+# 3. Parent class(es) — we'll cover this in Inheritance
+
+# This is called the Attribute Lookup Chain.
+
+class Car:
+    wheels = 4   # class variable
+
+    def __init__(self, brand):
+        self.brand = brand   # instance variable
+
+my_car = Car("Toyota")
+
+# Python looks in my_car.__dict__ first
+print(my_car.__dict__)   # {'brand': 'Toyota'}  ← only instance variables!
+print(Car.__dict__)       # {'wheels': 4, '__init__': ..., ...}
+
+print(my_car.brand)    # Found in instance dict ✅
+print(my_car.wheels)   # NOT in instance dict → found in class dict ✅

@@ -28,3 +28,4 @@ dog2.info()    # Name: Max, Breed: German Shepherd, Age: 5
 # Accessing attributes directly
 print(dog1.name)   # Buddy
 print(dog2.age)    # 5
+
